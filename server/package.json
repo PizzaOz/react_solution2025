@@ -1,0 +1,20 @@
+{
+  "name": "@react_solution2025/server",
+  "private": true,
+  "description": "Example server on React Solution for SSR",
+  "main": "index.ts",
+  "type": "module",
+  "author": "Vladimir Shestakov boolive@yandex.ru",
+  "license": "ISC",
+  "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "express": "^4.21.0",
+    "merge-change": "*",
+    "react-solution": "*"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.7",
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.5.5"
+  }
+}

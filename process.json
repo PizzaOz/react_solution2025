@@ -1,0 +1,16 @@
+{
+  "apps": [
+    {
+      "name": "ssr",
+      "script": "./server/index.ts",
+      "instances": "1",
+      "exec_mode": "cluster",
+      "watch": false,
+      "interpreter": "node",
+      "interpreter_args": "--import ./server/register.js",
+      "env": {
+        "NODE_ENV": "production"
+      }
+    }
+  ]
+}
