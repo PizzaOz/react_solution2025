@@ -9,7 +9,11 @@ interface FormValues {
   password: string;
 }
 
-const Forms = () => {
+interface FormsProps {
+  returnUrl?: string;
+}
+
+const Forms = ({ returnUrl = '/profile' }: FormsProps) => {
   const session = useSolution<SessionStore>(SESSION_STORE);
   const navigate = useNavigate();
 
@@ -18,7 +22,7 @@ const Forms = () => {
       login: values.username,
       password: values.password
     });
-    navigate('/profile');
+    navigate(returnUrl);
   };
 
   return (
