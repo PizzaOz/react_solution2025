@@ -12,18 +12,25 @@ export class CountriesStore {
 
   async load() {
     this.state.set({ ...this.state.get(), waiting: true });
-    const response = await this.depends.httpClient.request({
-      url: '/api/v1/countries?limit=20&fields=_id,title'
-    });
-    this.state.set({
-      list: response.data.result.items,
-      waiting: false
-    });
-  }
 
-  async init() {
-    if (this.state.get().list.length === 0) {
-      await this.load();
+    try {
+      const response = await this.depends.httpClient.request({
+        url: '/api/v1/countries?limit=1000&fields=items(_id,title)'
+      });
+
+      this.state.set({
+        list: response.data.result.items,
+        waiting: false
+      });
+      
+      return true;
+    } catch (error) {
+      this.state.set({ 
+        ...this.state.get(),
+        waiting: false
+      });
+      console.error('Ошибка загрузки стран:', error);
+      return false;
     }
   }
 }

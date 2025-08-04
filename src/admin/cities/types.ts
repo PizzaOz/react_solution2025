@@ -6,7 +6,6 @@ export interface City {
     _type: string;
   };
   population?: number;
-  location?: [number, number];
 }
 
 export interface CitiesState {
@@ -14,6 +13,6 @@ export interface CitiesState {
   filteredList: City[];
   waiting: boolean;
   searchQuery: string;
+  currentCountryFilter: string | null;
+  total: number;
 }
-
-export type CitiesStateUpdate = Partial<CitiesState>;

@@ -7,58 +7,57 @@ export class CitiesStore {
     list: [],
     filteredList: [],
     waiting: false,
-    searchQuery: ''
+    searchQuery: '',
+    currentCountryFilter: null,
+    total: 0
   });
 
   constructor(private depends: { httpClient: HttpClient }) {}
 
-  async load() {
+  async load(params: {
+    searchQuery?: string;
+    countryId?: string;
+    limit?: number;
+    skip?: number;
+  } = {}) {
     this.state.set({ ...this.state.get(), waiting: true });
+
     try {
+      const query = new URLSearchParams();
+      
+      if (params.searchQuery) {
+        query.append('search[query]', params.searchQuery);
+      }
+      
+      if (params.countryId) {
+        query.append('search[country]', params.countryId);
+      }
+
       const response = await this.depends.httpClient.request({
-        url: '/api/v1/cities?limit=1000&fields=_id,title,country,population'
+        url: `/api/v1/cities?${query.toString()}&limit=${params.limit || 20}&skip=${params.skip || 0}&fields=items(_id,title,country,population),count`
+      });
+
+      this.state.set({
+        list: response.data.result.items,
+        filteredList: response.data.result.items,
+        waiting: false,
+        searchQuery: params.searchQuery || '',
+        currentCountryFilter: params.countryId || null,
+        total: response.data.result.count
       });
       
-      const cities = response.data.result.items;
-      this.state.set({
-        list: cities,
-        filteredList: cities,
-        waiting: false,
-        searchQuery: ''
-      });
+      return true;
     } catch (error) {
-      this.state.set({ ...this.state.get(), waiting: false });
-      throw error;
-    }
-  }
-
-  search(query: string) {
-    const currentState = this.state.get();
-    const normalizedQuery = query.trim().toLowerCase();
-    
-    if (!normalizedQuery) {
-      this.state.set({
-        ...currentState,
-        filteredList: currentState.list,
-        searchQuery: ''
+      this.state.set({ 
+        ...this.state.get(),
+        waiting: false,
+        list: [],
+        filteredList: [],
+        currentCountryFilter: null,
+        total: 0
       });
-      return;
-    }
-
-    const filtered = currentState.list.filter(city => 
-      city.title.toLowerCase().includes(normalizedQuery)
-    );
-
-    this.state.set({
-      ...currentState,
-      filteredList: filtered,
-      searchQuery: query
-    });
-  }
-
-  async init() {
-    if (this.state.get().list.length === 0) {
-      await this.load();
+      console.error('Ошибка загрузки:', error);
+      return false;
     }
   }
 }
