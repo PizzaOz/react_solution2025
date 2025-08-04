@@ -16,3 +16,12 @@ export interface CitiesState {
   currentCountryFilter: string | null;
   total: number;
 }
+
+export interface CreateCityData {
+  title: string;
+  country: {
+    _id: string;
+    _type: string;
+  };
+  population?: number;
+}

@@ -60,4 +60,42 @@ export class CitiesStore {
       return false;
     }
   }
+
+  async create(cityData: {
+    title: string;
+    country: { _id: string; _type: string };
+    population?: number;
+  }) {
+    this.state.set({ ...this.state.get(), waiting: true });
+    
+    try {
+      const token = localStorage.getItem('token'); // Получаем токен из localStorage
+      
+      await this.depends.httpClient.request({
+        method: 'POST',
+        url: '/api/v1/cities',
+        headers: {
+          'X-Token': token // Добавляем токен в заголовки
+        },
+        data: {
+          title: cityData.title,
+          country: {
+            _id: cityData.country._id,
+            _type: cityData.country._type
+          },
+          population: cityData.population || 0,
+          description: "",
+          location: [],
+          location2: []
+        }
+      });
+      
+      return true;
+    } catch (error) {
+      console.error('Ошибка создания города:', error);
+      return false;
+    } finally {
+      this.state.set({ ...this.state.get(), waiting: false });
+    }
+  }
 }
