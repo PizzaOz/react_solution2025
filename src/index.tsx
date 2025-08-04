@@ -23,6 +23,8 @@ import { App } from '@src/app';
 // import { SessionStore } from './auth/session-store/index.ts';
 // import { UsersApi } from './auth/users-api/index.ts';
 import { authFeature } from './auth/provider.ts';
+import { adminFeature } from './admin/provider.ts';
+
 
 export default async function prepareSolutions(envPatch: Patch<Env> = {}): Promise<Solutions> {
   return new Solutions()
@@ -36,6 +38,7 @@ export default async function prepareSolutions(envPatch: Patch<Env> = {}): Promi
     .register(logService)
     .register(dumpService)
     .register(authFeature)
+    .register(adminFeature)
     .register({
       token: RENDER_COMPONENT,
       depends: { router: ROUTER_SERVICE },

@@ -1,9 +1,7 @@
-
+import { AdminLayout } from '@src/admin/components/AdminLayout';
 import Forms from '@src/auth/component/login';
-import { ProfilePage } from '@src/auth/component/profile';
 import { SessionStore } from '@src/auth/session-store';
 import { SESSION_STORE } from '@src/auth/session-store/token';
-
 import { memo, Suspense } from 'react';
 import { Route, Routes } from 'react-router';
 import { Head, ModalsContainer, useInit, useSolution } from 'react-solution';
@@ -25,7 +23,7 @@ export const App = memo(() => {
         <Routes>
           <Route path="/" index element={<Forms/>} />
           <Route path="*" element={<div>Страница не найдена</div>} />
-          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/profile" element={<AdminLayout />} />
         </Routes>
         <ModalsContainer />
       </Suspense>
