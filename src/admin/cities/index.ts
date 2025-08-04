@@ -69,13 +69,13 @@ export class CitiesStore {
     this.state.set({ ...this.state.get(), waiting: true });
     
     try {
-      const token = localStorage.getItem('token'); // Получаем токен из localStorage
+      const token = localStorage.getItem('token');
       
       await this.depends.httpClient.request({
         method: 'POST',
         url: '/api/v1/cities',
         headers: {
-          'X-Token': token // Добавляем токен в заголовки
+          'X-Token': token
         },
         data: {
           title: cityData.title,
@@ -93,6 +93,66 @@ export class CitiesStore {
       return true;
     } catch (error) {
       console.error('Ошибка создания города:', error);
+      return false;
+    } finally {
+      this.state.set({ ...this.state.get(), waiting: false });
+    }
+  }
+
+  async deleteCity(id: string) {
+    this.state.set({ ...this.state.get(), waiting: true });
+    
+    try {
+      const token = localStorage.getItem('token');
+      await this.depends.httpClient.request({
+        method: 'DELETE',
+        url: `/api/v1/cities/${id}`,
+        headers: {
+          'X-Token': token
+        }
+      });
+      return true;
+    } catch (error) {
+      console.error('Ошибка удаления города:', error);
+      return false;
+    } finally {
+      this.state.set({ ...this.state.get(), waiting: false });
+    }
+  }
+
+  async updateCity(
+    id: string,
+    cityData: {
+      title: string;
+      country: { _id: string; _type: string };
+      population?: number;
+    }
+  ) {
+    this.state.set({ ...this.state.get(), waiting: true });
+    
+    try {
+      const token = localStorage.getItem('token');
+      await this.depends.httpClient.request({
+        method: 'PUT',
+        url: `/api/v1/cities/${id}`,
+        headers: {
+          'X-Token': token
+        },
+        data: {
+          title: cityData.title,
+          country: {
+            _id: cityData.country._id,
+            _type: cityData.country._type
+          },
+          population: cityData.population || 0,
+          description: "",
+          location: [],
+          location2: []
+        }
+      });
+      return true;
+    } catch (error) {
+      console.error('Ошибка обновления города:', error);
       return false;
     } finally {
       this.state.set({ ...this.state.get(), waiting: false });
