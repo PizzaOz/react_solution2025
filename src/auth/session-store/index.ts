@@ -19,10 +19,18 @@ export class SessionStore {
 
   async signIn(data: { login: string; password: string }) {
     this.state.set({ ...this.state.get(), waiting: true });
-    const result = await this.usersApi.signIn(data);
-    localStorage.setItem('token', result.token);
-    this.state.set({ token: result.token, waiting: false });
-    console.log('Авторизован! Токен:', result.token);
+    try {
+      const result = await this.usersApi.signIn(data);
+      localStorage.setItem('token', result.token);
+      this.state.set({ token: result.token, waiting: false });
+      console.log('Авторизован! Токен:', result.token);
+    } catch (error) {
+      this.state.set({ 
+        ...this.state.get(),
+        waiting: false
+      });
+      throw error;
+    }
   }
 
   async remind() {

@@ -16,7 +16,11 @@
     "check:lint:fix": "eslint --fix",
     "check:types": "tsc --noEmit",
     "check:prettier": "prettier . --check",
-    "check:prettier:fix": "prettier . --write"
+    "check:prettier:fix": "prettier . --write",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:report": "playwright show-report",
+    "test:e2e:install": "playwright install chromium"
   },
   "workspaces": [
     "./packages",
@@ -35,9 +39,11 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.11.0",
+    "@playwright/test": "^1.54.2",
     "@types/dotenv-parse-variables": "^2.0.3",
     "@types/eslint__js": "^8.42.3",
     "@types/jest": "^29.5.13",
+    "@types/node": "^24.2.0",
     "@types/react": "^18.3.8",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
