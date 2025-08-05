@@ -71,7 +71,7 @@ export class CitiesStore {
     try {
       const token = localStorage.getItem('token');
       
-      await this.depends.httpClient.request({
+      const response = await this.depends.httpClient.request({
         method: 'POST',
         url: '/api/v1/cities',
         headers: {
@@ -91,9 +91,14 @@ export class CitiesStore {
       });
       
       return true;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Ошибка создания города:', error);
-      return false;
+      
+      if (error.response?.status === 403) {
+        throw new Error('Недостаточно прав для создания города');
+      } else {
+        throw new Error('Ошибка при создании города');
+      }
     } finally {
       this.state.set({ ...this.state.get(), waiting: false });
     }
@@ -112,9 +117,11 @@ export class CitiesStore {
         }
       });
       return true;
-    } catch (error) {
-      console.error('Ошибка удаления города:', error);
-      return false;
+    } catch (error: any) {
+      if (error.response?.status === 403) {
+        throw new Error('Недостаточно прав для удаления города');
+      }
+      throw new Error('Ошибка при удалении города');
     } finally {
       this.state.set({ ...this.state.get(), waiting: false });
     }
@@ -151,9 +158,11 @@ export class CitiesStore {
         }
       });
       return true;
-    } catch (error) {
-      console.error('Ошибка обновления города:', error);
-      return false;
+    } catch (error: any) {
+      if (error.response?.status === 403) {
+        throw new Error('Недостаточно прав для редактирования города');
+      }
+      throw new Error('Ошибка при обновлении города');
     } finally {
       this.state.set({ ...this.state.get(), waiting: false });
     }

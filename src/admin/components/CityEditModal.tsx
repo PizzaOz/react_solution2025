@@ -1,4 +1,5 @@
 import { Modal, Form, Input, Select } from 'antd';
+import { useEffect } from 'react';
 
 export const CityEditModal = ({
   visible,
@@ -17,6 +18,25 @@ export const CityEditModal = ({
 }) => {
   const [form] = Form.useForm();
 
+  // Сбрасываем форму при открытии модального окна
+  useEffect(() => {
+    if (visible) {
+      form.resetFields();
+      if (editingCity) {
+        form.setFieldsValue({
+          title: editingCity.data.title,
+          country: editingCity.data.country._id,
+          population: editingCity.data.population
+        });
+      }
+    }
+  }, [visible, editingCity, form]);
+
+  const handleSubmit = (values: any) => {
+    onSubmit(values);
+    form.resetFields();
+  };
+
   return (
     <Modal
       title={editingCity ? 'Редактировать город' : 'Добавить новый город'}
@@ -30,12 +50,7 @@ export const CityEditModal = ({
       <Form
         form={form}
         layout="vertical"
-        initialValues={{
-          title: editingCity?.data.title,
-          country: editingCity?.data.country._id,
-          population: editingCity?.data.population
-        }}
-        onFinish={onSubmit}
+        onFinish={handleSubmit}
       >
         <Form.Item
           name="title"

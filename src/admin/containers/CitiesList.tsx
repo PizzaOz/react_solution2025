@@ -5,6 +5,7 @@ import { COUNTRIES_STORE } from '../countries/tokens';
 import { CitiesFilters } from '../components/CitiesFilters';
 import { CitiesTable } from '../components/CitiesTable';
 import { CityEditModal } from '../components/CityEditModal';
+import { message } from 'antd';
 
 function CitiesList() {
   const citiesStore = useSolution(CITIES_STORE);
@@ -99,39 +100,45 @@ function CitiesList() {
   // Удаление города
   const handleDelete = useCallback(
     async (id: string) => {
-      const success = await citiesStore.deleteCity(id);
-      if (success) {
+      try {
+        await citiesStore.deleteCity(id);
+        message.success('Город успешно удалён');
         loadData(pagination.current);
+      } catch (error: any) {
+        message.error(error.message);
       }
     },
-    [citiesStore, loadData, pagination.current]
+    [citiesStore, loadData, pagination.current],
   );
 
   // Отправка формы (создание/редактирование)
   const handleModalSubmit = useCallback(
     async (values: any) => {
-      const cityData = {
-        title: values.title,
-        country: {
-          _id: values.country,
-          _type: 'ref',
-        },
-        population: values.population,
-      };
-
-      let success;
-      if (editingCity) {
-        success = await citiesStore.updateCity(editingCity.id, cityData);
-      } else {
-        success = await citiesStore.create(cityData);
-      }
-
-      if (success) {
+      try {
+        const cityData = {
+          title: values.title,
+          country: {
+            _id: values.country,
+            _type: 'ref',
+          },
+          population: values.population
+        };
+  
+        if (editingCity) {
+          await citiesStore.updateCity(editingCity.id, cityData);
+          message.success('Город успешно обновлён');
+        } else {
+          await citiesStore.create(cityData);
+          message.success('Город успешно создан');
+        }
+        
         setIsModalVisible(false);
         loadData(pagination.current);
+      } catch (error: any) {
+        message.error(error.message);
       }
     },
-    [editingCity, citiesStore, loadData, pagination.current]
+    [editingCity, citiesStore, loadData, pagination.current],
   );
 
   // Закрытие модалки
@@ -152,7 +159,7 @@ function CitiesList() {
         searchInput={searchInput}
         selectedCountry={selectedCountry}
         countries={countries}
-        onSearchInputChange={setSearchInput} // setState не нужно мемоизировать
+        onSearchInputChange={setSearchInput}
         onSearch={handleSearch}
         onReset={handleReset}
         onCountryChange={handleCountryChange}

@@ -1,5 +1,18 @@
 import { Table, Alert, Spin } from 'antd';
 import { CityActionsMenu } from './CityActionsMenu';
+import { message } from 'antd';
+
+interface CitiesTableProps {
+  cities: any[];
+  countries: any[];
+  pagination: any;
+  loading: boolean;
+  total: number;
+  searchQuery: string;
+  onEdit: (city: any) => void;
+  onDelete: (id: string) => Promise<void>;
+  onPageChange: (pagination: any) => void;
+}
 
 export const CitiesTable = ({
   cities,
@@ -10,18 +23,8 @@ export const CitiesTable = ({
   searchQuery,
   onEdit,
   onDelete,
-  onPageChange
-}: {
-  cities: any[];
-  countries: any[];
-  pagination: any;
-  loading: boolean;
-  total: number;
-  searchQuery: string;
-  onEdit: (city: any) => void;
-  onDelete: (id: string) => void;
-  onPageChange: (pagination: any) => void;
-}) => {
+  onPageChange,
+}: CitiesTableProps) => {
   const columns = [
     {
       title: 'Город',
@@ -50,7 +53,13 @@ export const CitiesTable = ({
         <CityActionsMenu 
           city={city} 
           onEdit={() => onEdit(city)} 
-          onDelete={() => onDelete(city._id)} 
+          onDelete={async () => {
+            try {
+              await onDelete(city._id);
+            } catch (error) {
+              message.error('Ошибка при удалении города');
+            }
+          }} 
         />
       )
     }

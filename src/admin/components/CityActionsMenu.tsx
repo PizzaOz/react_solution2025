@@ -1,21 +1,21 @@
 import { Button, Dropdown, MenuProps, Popconfirm, message } from 'antd';
 import { DownOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
+interface CityActionsMenuProps {
+  city: any;
+  onEdit: () => void;
+  onDelete: () => Promise<void>;
+}
+
 export const CityActionsMenu = ({
   city,
   onEdit,
   onDelete
-}: {
-  city: any;
-  onEdit: () => void;
-  onDelete: () => void;
-}) => {
+}: CityActionsMenuProps) => {
   const handleDelete = async () => {
     try {
       await onDelete();
-      message.success('Город успешно удалён');
-    } catch {
-      message.error('Ошибка при удалении города');
+    } catch (error) {
     }
   };
 
