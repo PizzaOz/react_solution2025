@@ -4,7 +4,7 @@ import { useSolution } from 'react-solution';
 import { useNavigate } from 'react-router-dom';
 import { SESSION_STORE } from '@src/auth/session-store/token';
 import { SessionStore } from '@src/auth/session-store';
-import { CitiesList } from './CitiesList';
+import CitiesList from './CitiesList';
 
 const { Header } = Layout;
 
