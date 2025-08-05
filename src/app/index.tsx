@@ -1,4 +1,4 @@
-import { AdminLayout } from '@src/admin/components/AdminLayout';
+import { AdminLayout } from '@src/admin/containers/AdminLayout';
 import Forms from '@src/auth/component/login';
 import Protected from '@src/auth/component/protected';
 import { SessionStore } from '@src/auth/session-store';

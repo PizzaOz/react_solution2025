@@ -2,9 +2,9 @@ import { useSolution } from 'react-solution';
 import { useEffect, useState } from 'react';
 import { CITIES_STORE } from '../cities/token';
 import { COUNTRIES_STORE } from '../countries/tokens';
-import { CitiesFilters } from './CitiesFilters';
-import { CitiesTable } from './CitiesTable';
-import { CityEditModal } from './CityEditModal';
+import { CitiesFilters } from '../components/CitiesFilters';
+import { CitiesTable } from '../components/CitiesTable';
+import { CityEditModal } from '../components/CityEditModal';
 
 export const CitiesList = () => {
   const citiesStore = useSolution(CITIES_STORE);
@@ -48,15 +48,29 @@ export const CitiesList = () => {
   }, []);
 
   const handleSearch = () => loadData(1);
+
   const handleReset = () => {
     setSearchInput('');
     setSelectedCountry(null);
-    loadData(1);
+    citiesStore.load({
+      searchQuery: '',
+      countryId: undefined,
+      limit: pagination.pageSize,
+      skip: 0
+    }).then(() => {
+      setPagination({
+        current: 1,
+        pageSize: 20,
+        total: citiesStore.state.get().total
+      });
+    });
   };
+
   const handleCountryChange = (countryId: string) => {
     setSelectedCountry(countryId);
     loadData(1);
   };
+
   const handleTableChange = (newPagination: any) => loadData(newPagination.current);
 
   const showAddModal = () => {
